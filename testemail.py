@@ -29,8 +29,8 @@ def extract_customer_info(body):
         phone_number = phone_number_match.group(1).strip() if phone_number_match else None
 
         # Extracting nationality
-        nationality_match = re.search(r'(?<=\n)(.*?)(?={})'.format(re.escape(email_address)), body, re.DOTALL)
-        nationality = nationality_match.group(0).strip() if nationality_match else None
+        nationality_match = re.search(r'\b([A-Z][a-z]+)\b$', body, re.MULTILINE)
+        nationality = nationality_match.group(1).strip() if nationality_match else None
 
         return customer_name, nationality, email_address, phone_number
     except AttributeError:
@@ -88,4 +88,4 @@ while True:
         mail.logout()
 
     # Add a delay before the next iteration
-    time.sleep(60)  # Adjust the delay time as needed
+    time.sleep(5)  # Adjust the delay time as needed
