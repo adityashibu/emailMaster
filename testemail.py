@@ -23,14 +23,14 @@ def extract_customer_info(body):
         # Extracting email address
         email_address_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', body)
         email_address = email_address_match.group(0) if email_address_match else None
+        
+        # Extracting nationality
+        nationality_match = re.search(r'([^@\n]+)\n{}'.format(re.escape(email_address)), body)
+        nationality = nationality_match.group(1).strip() if nationality_match else None
 
         # Extracting phone number
         phone_number_match = re.search(r'Phone:\s*(.*?)\n', body)
         phone_number = phone_number_match.group(1).strip() if phone_number_match else None
-
-        # Extracting nationality
-        nationality_match = re.search(r'\b([A-Z][a-z]+)\b$', body, re.MULTILINE)
-        nationality = nationality_match.group(1).strip() if nationality_match else None
 
         return customer_name, nationality, email_address, phone_number
     except AttributeError:
