@@ -45,13 +45,13 @@ def extract_customer_info(body):
         print("Failed to extract customer information. Email body:\n", body)
         return None, None, None, None, None
 
-def send_email(email_receiver):
+def send_email(email_receiver, customer_name):
     subject = "Thank you for your booking"
     body = """
     <html>
     <head></head>
     <body style="font-family: 'Verdana';">
-      <p>Dear Guest</p>
+      <p>Dear {}</p>
       <p style="margin-top:0px">Thank you for your booking</p>
       <p style="padding-top:20px">We Welcome you to Dubai.</p>
       <p>We have received Your Combo reservation with below details. <br>
@@ -69,7 +69,7 @@ def send_email(email_receiver):
       Reservation Team</p>
     </body>
     </html>
-    """
+    """.format(customer_name)
 
     # Create a MIMEText object with HTML content
     msg = MIMEMultipart()
@@ -123,7 +123,7 @@ while True:
                             print("Email Address:", email_address)
                             print("Phone Number:", phone_number)
                             print("--------")
-                            send_email(email_address)
+                            send_email(email_address, customer_name)
 
     except Exception as e:
         print("An error occurred:", e)
