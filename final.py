@@ -39,13 +39,17 @@ def extract_customer_info(body):
         # Extracting product information
         product_match = re.search(r'\*\s*(.*?)\s*\*\nOption: Combo : Dubai Frame \+ Museum of the Future \(DF\+MOTF\)', body, re.DOTALL)
         product = product_match.group(1).strip() if product_match else None
+        
+        # Extracting reference number from the subject
+        reference_number_match = re.search(r'Booking - .* - (.*)$', subject)
+        reference_number = reference_number_match.group(1).strip() if reference_number_match else None
 
-        return customer_name, nationality, email_address, phone_number, product
+        return customer_name, nationality, email_address, phone_number, product, reference_number
     except AttributeError:
         print("Failed to extract customer information. Email body:\n", body)
         return None, None, None, None, None
 
-def send_email(email_receiver, customer_name):
+def send_email(email_receiver, customer_name, reference_number, nationality, phone):
     first_name = customer_name.split()[0]
     
     subject = "Thank you for your booking"
@@ -55,9 +59,12 @@ def send_email(email_receiver, customer_name):
     <body style="font-family: 'Verdana';">
       <p>Hi {},</p>
       <p style="margin-top:0px">Thank you for your booking</p>
-      <p style="padding-top:20px">We Welcome you to Dubai.</p>
       <p>We have received Your Combo reservation with below details. <br>
-      <strong>DF+MOTF | Dubai Frame + Museum of The Future Combo</strong></p>
+      <strong>DF+MOTF | Dubai Frame + Museum of The Future Combo</strong></p><br>
+      <strong>Reference Number:</strong> {}<br>
+      <strong>Main Customer:</strong> {}<br>
+      <strong>Nationality:</strong> {}<br>
+      <strong>Phone No:</strong> {}<br>
       <p>-------</p>
       <p style="color:red;"><strong><span style="background-color: yellow;">Please read</span></strong></p>
       <p style="padding-top:15px; color:red"><strong>MUSEUM OF THE FUTURE (MOTF)</strong></p>
@@ -71,7 +78,7 @@ def send_email(email_receiver, customer_name):
       Reservation Team</p>
     </body>
     </html>
-    """.format(first_name)
+    """.format(first_name, reference_number, customer_name, nationality, phone)
 
     # Create a MIMEText object with HTML content
     msg = MIMEMultipart()
@@ -115,7 +122,7 @@ while True:
                                     body = part.get_payload(decode=True).decode()
                         else:
                             body = msg.get_payload(decode=True).decode()
-                        customer_name, nationality, email_address, phone_number, product = extract_customer_info(body)
+                        customer_name, nationality, email_address, phone_number, product, reference_number = extract_customer_info(body)
                         if customer_name is not None:
                             print("--------")
                             print("Mail received with subject:", subject)
@@ -125,7 +132,7 @@ while True:
                             print("Email Address:", email_address)
                             print("Phone Number:", phone_number)
                             print("--------")
-                            send_email(email_address, customer_name)
+                            send_email(email_address, customer_name, reference_number, nationality, phone_number)
 
     except Exception as e:
         print("An error occurred:", e)
