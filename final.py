@@ -46,12 +46,14 @@ def extract_customer_info(body):
         return None, None, None, None, None
 
 def send_email(email_receiver, customer_name):
+    first_name = customer_name.split()[0]
+    
     subject = "Thank you for your booking"
     body = """
     <html>
     <head></head>
     <body style="font-family: 'Verdana';">
-      <p>Dear {}</p>
+      <p>Hi {},</p>
       <p style="margin-top:0px">Thank you for your booking</p>
       <p style="padding-top:20px">We Welcome you to Dubai.</p>
       <p>We have received Your Combo reservation with below details. <br>
@@ -59,7 +61,7 @@ def send_email(email_receiver, customer_name):
       <p>-------</p>
       <p style="color:red;"><strong><span style="background-color: yellow;">Please read</span></strong></p>
       <p style="padding-top:15px; color:red"><strong>MUSEUM OF THE FUTURE (MOTF)</strong></p>
-      <p>We will issue the Museum pass as per the Available Time slots provided by the Museum and will advise the entry time soon. <br>
+      <p>We will issue the Museum pass <strong>as per the Available Time slots provided by the Museum</strong> and will advise the entry time soon. <br>
       <strong>You are requested to adjust other activities as per Dubai Museum Entry time.</strong>
       <p style="padding-top:15px; color:red"><strong>DUBAI FRAME (DF)</strong></p>
       <p>Operates from 09am to 07 Pm, granting you flexible entry throughout the day. <br><br>
@@ -69,7 +71,7 @@ def send_email(email_receiver, customer_name):
       Reservation Team</p>
     </body>
     </html>
-    """.format(customer_name)
+    """.format(first_name)
 
     # Create a MIMEText object with HTML content
     msg = MIMEMultipart()
