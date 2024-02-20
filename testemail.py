@@ -32,10 +32,14 @@ def extract_customer_info(body):
         phone_number_match = re.search(r'Phone:\s*(.*?)\n', body)
         phone_number = phone_number_match.group(1).strip() if phone_number_match else None
 
-        return customer_name, nationality, email_address, phone_number
+        # Extracting product information
+        product_match = re.search(r'\*\s*(.*?)\s*\*\nOption: Combo : Dubai Frame \+ Museum of the Future \(DF\+MOTF\)', body, re.DOTALL)
+        product = product_match.group(1).strip() if product_match else None
+
+        return customer_name, nationality, email_address, phone_number, product
     except AttributeError:
         print("Failed to extract customer information. Email body:\n", body)
-        return None, None, None, None
+        return None, None, None, None, None
 
 while True:
     try:
@@ -66,10 +70,11 @@ while True:
                                     body = part.get_payload(decode=True).decode()
                         else:
                             body = msg.get_payload(decode=True).decode()
-                        customer_name, nationality, email_address, phone_number = extract_customer_info(body)
+                        customer_name, nationality, email_address, phone_number, product = extract_customer_info(body)
                         if customer_name is not None:
                             print("--------")
                             print("Mail received with subject:", subject)
+                            print("Product:", product)
                             print("Customer Name:", customer_name)
                             print("Nationality:", nationality)
                             print("Email Address:", email_address)
